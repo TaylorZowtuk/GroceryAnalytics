@@ -1,6 +1,6 @@
 # Ignore files produced by queries
-.csv
-.xlsx
+*.csv
+*.xlsx
 
 # History files
 .Rhistory
