@@ -6,7 +6,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 source("random_forest_cleaning.R")
 
 # Load the data produced by random_forest.sql
-baskets <- read_csv("random_forest.csv")
+baskets <- read_csv("rf_1.csv")
 baskets_with_multiple_cust <- read_csv("baskets_with_multiple_cust.csv")
 
 baskets <- clean_data_for_random_forest(baskets, baskets_with_multiple_cust)
