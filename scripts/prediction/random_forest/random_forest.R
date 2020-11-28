@@ -3,49 +3,57 @@ library(randomForest)
 
 # Set working dir to the path of this script; only works when using RStudio
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-source("random_forest_cleaning.R")
+source("rf_1_cleaning.R")
 
-# Load the data produced by random_forest.sql
+# Load the data produced by rf_1.sql
 baskets <- read_csv("rf_1.csv")
 baskets_with_multiple_cust <- read_csv("baskets_with_multiple_cust.csv")
 
-baskets <- clean_data_for_random_forest(baskets, baskets_with_multiple_cust)
+baskets <- rf_1_clean(baskets, baskets_with_multiple_cust)
 
-# Partition the training, eval, test sets using ratio 70:15:15
+# Partition the training, test sets using ratio 80:20
 set.seed(7)
-percent_train <- 7/10
+percent_train <- 8/10
 train_ids <- sample(1:nrow(baskets), size=percent_train*nrow(baskets) , replace=F)
 train_set <- baskets[train_ids, ]
-remaining <- baskets[-train_ids, ]
-percent_test <- 1/2
-test_ids <- sample(1:nrow(remaining), size=percent_test*nrow(remaining) , replace=F)
-valid_set <- remaining[-test_ids, ]
-test_set <- remaining[test_ids, ]
+test_set <- baskets[-train_ids, ]
 
 # Train a random forest model
-rf_1 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T)
-rf_1
-rf_1.valid <- predict(rf_1, valid_set)
-rf_1.valid.results <- table(valid_set$Lottery, rf_1.valid)
-rf_1.valid.results
-rf_1.valid.error.rate  <- 1 - sum(diag(rf_1.valid.results)) / sum(rf_1.valid.results)
-rf_1.valid.error.rate
-varImpPlot(rf_1)
+rf_1_1 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T)
+rf_1_1
+varImpPlot(rf_1_1)
 
-rf_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, cutoff=c(0.93,0.07))
-rf_2
-rf_2.valid <- predict(rf_2, valid_set)
-rf_2.valid.results <- table(valid_set$Lottery, rf_2.valid)
-rf_2.valid.results
-rf_2.valid.error.rate  <- 1 - sum(diag(rf_2.valid.results)) / sum(rf_2.valid.results)
-rf_2.valid.error.rate
-varImpPlot(rf_2)
+rf_1_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, cutoff=c(0.93,0.07))
+rf_1_2
+varImpPlot(rf_1_2)
 
-rf_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=2, ntree=2000, cutoff=c(0.93,0.07))
-rf_3
-rf_3.valid <- predict(rf_3, valid_set)
-rf_3.valid.results <- table(valid_set$Lottery, rf_3.valid)
-rf_3.valid.results
-rf_3.valid.error.rate  <- 1 - sum(diag(rf_3.valid.results)) / sum(rf_3.valid.results)
-rf_3.valid.error.rate
-varImpPlot(rf_3)
+# optimal ntree is 3500
+rf_1_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=2, ntree=2000, cutoff=c(0.93,0.07))
+rf_1_3
+varImpPlot(rf_1_3)
+
+# Try adding features
+source("rf_2_cleaning.R")
+# Load the data produced by rf_2.sql
+baskets <- read_csv("rf_2.csv")
+baskets <- rf_2_clean(baskets, baskets_with_multiple_cust)
+#any(is.na(baskets$NUM_ITEMS_IN_BASKET))
+
+train_ids <- sample(1:nrow(baskets), size=percent_train*nrow(baskets) , replace=F)
+train_set <- baskets[train_ids, ]
+test_set <- baskets[-train_ids, ]
+
+rf_2_1 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T)
+rf_2_1
+varImpPlot(rf_2_1)
+
+rf_2_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, cutoff=c(0.55,0.45))
+rf_2_2
+varImpPlot(rf_2_2)
+
+rf_2_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=3, ntree=2000, cutoff=c(0.55, 0.45))
+rf_2_3
+varImpPlot(rf_2_3)
+
+# Synthesize features by AND'ing cols
+#baskets <- mutate(baskets, Prod_and_groc=Produce&&Grocery)
