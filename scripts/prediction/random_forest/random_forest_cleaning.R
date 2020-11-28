@@ -46,5 +46,8 @@ clean_data_for_random_forest <- function(baskets, baskets_with_multiple_cust) {
   # Factor CUSHOM
   baskets[,"CUSHOM"] <- lapply(baskets[, "CUSHOM"], as.factor)
   
+  # Factor the "basket contains item from" boolean cols
+  baskets <- mutate_if(baskets, is.logical, as.factor)
+  
   return(baskets)
 }
