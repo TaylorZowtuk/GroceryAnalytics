@@ -14,6 +14,7 @@ baskets <- rf_1_clean(baskets, baskets_with_multiple_cust)
 # Partition the training, test sets using ratio 80:20
 set.seed(7)
 percent_train <- 8/10
+
 train_ids <- sample(1:nrow(baskets), size=percent_train*nrow(baskets) , replace=F)
 train_set <- baskets[train_ids, ]
 test_set <- baskets[-train_ids, ]
@@ -51,9 +52,30 @@ rf_2_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set
 rf_2_2
 varImpPlot(rf_2_2)
 
-rf_2_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=3, ntree=2000, cutoff=c(0.55, 0.45))
+rf_2_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=4, ntree=2000, cutoff=c(0.55, 0.45))
 rf_2_3
 varImpPlot(rf_2_3)
 
-# Synthesize features by AND'ing cols
-#baskets <- mutate(baskets, Prod_and_groc=Produce&&Grocery)
+# Add more features and synthesize features by AND'ing cols
+source("rf_3_cleaning.R")
+# Load the data produced by rf_3.sql
+baskets <- read_csv("rf_3.csv")
+baskets <- rf_3_clean(baskets, baskets_with_multiple_cust)
+
+train_ids <- sample(1:nrow(baskets), size=percent_train*nrow(baskets) , replace=F)
+train_set <- baskets[train_ids, ]
+test_set <- baskets[-train_ids, ]
+
+rf_3_1 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T)
+rf_3_1
+varImpPlot(rf_3_1)
+
+cut_offs <- list(c(0.55, 0.45), c(0.6, 0.4), c(0.7, 0.3), c(0.85, 0.15), c(0.95, 0.05), c(0.98, 0.02))
+for (i in cut_offs) {
+  rf_3_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER-Salad, data=train_set, importance=T, cutoff=i)
+  print(rf_3_2)
+}
+
+rf_3_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER-Salad, data=train_set, importance=T, mtry=4, ntree=2000, cutoff=c(0.7, 0.3))
+rf_3_3
+varImpPlot(rf_3_3)
