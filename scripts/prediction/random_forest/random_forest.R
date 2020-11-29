@@ -79,3 +79,17 @@ for (i in cut_offs) {
 rf_3_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER-Salad, data=train_set, importance=T, mtry=4, ntree=2000, cutoff=c(0.7, 0.3))
 rf_3_3
 varImpPlot(rf_3_3)
+
+# Re produce the best model and evaluate on the test set
+baskets <- read_csv("b_1.csv")
+baskets <- b_1_clean(baskets, baskets_with_multiple_cust)
+train_ids <- sample(1:nrow(baskets), size=percent_train*nrow(baskets) , replace=F)
+train_set <- baskets[train_ids, ]
+test_set <- baskets[-train_ids, ]
+b_1_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=7, cutoff=c(0.25, 0.75))
+b_1_2
+b_1_2.pred <- predict(b_1_2, test_set)
+b_1_2.pred.results <- table(test_set$Lottery, b_1_2.pred)
+b_1_2.pred.results
+b_1_2.test.error.rate  <- 1 - sum(diag(b_1_2.pred.results)) / sum(b_1_2.pred.results)
+b_1_2.test.error.rate
