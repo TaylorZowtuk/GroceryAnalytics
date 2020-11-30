@@ -97,10 +97,11 @@ baskets <- b_1_clean(baskets, baskets_with_multiple_cust)
 train_ids <- sample(1:nrow(baskets), size=percent_train*nrow(baskets) , replace=F)
 train_set <- baskets[train_ids, ]
 test_set <- baskets[-train_ids, ]
-b_1_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=7, ntree=2000, cutoff=c(0.25, 0.75))
+b_1_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=7, ntree=4000, cutoff=c(0.25, 0.75))
 b_1_3
 b_1_3.pred <- predict(b_1_3, test_set)
 b_1_3.pred.results <- table(test_set$Lottery, b_1_3.pred)
 b_1_3.pred.results
 b_1_3.test.error.rate  <- 1 - sum(diag(b_1_3.pred.results)) / sum(b_1_3.pred.results)
 b_1_3.test.error.rate
+varImpPlot(b_1_3)
