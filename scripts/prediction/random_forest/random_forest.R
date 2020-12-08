@@ -24,12 +24,16 @@ rf_1_1 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set
 rf_1_1
 varImpPlot(rf_1_1)
 
-rf_1_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, cutoff=c(0.93,0.07))
-rf_1_2
+cut_offs <- list(c(0.25, 0.75), c(0.30, 0.70), c(0.35, 0.65), c(0.45, 0.55), c(0.55, 0.45), c(0.6, 0.4), c(0.7, 0.3), c(0.85, 0.15), c(0.95, 0.05), c(0.98, 0.02))
+for (i in cut_offs) {
+  rf_1_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, cutoff=i)
+  print(i)
+  print(rf_1_2)
+}
 varImpPlot(rf_1_2)
 
 # optimal ntree is 3500
-rf_1_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=2, ntree=2000, cutoff=c(0.93,0.07))
+rf_1_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, ntree=2000, cutoff=c(0.93,0.07))
 rf_1_3
 varImpPlot(rf_1_3)
 
@@ -48,11 +52,15 @@ rf_2_1 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set
 rf_2_1
 varImpPlot(rf_2_1)
 
-rf_2_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, cutoff=c(0.55,0.45))
-rf_2_2
+cut_offs <- list(c(0.25, 0.75), c(0.30, 0.70), c(0.35, 0.65), c(0.45, 0.55), c(0.55, 0.45), c(0.6, 0.4), c(0.7, 0.3), c(0.85, 0.15), c(0.95, 0.05), c(0.98, 0.02))
+for (i in cut_offs) {
+  rf_2_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, cutoff=i)
+  print(i)
+  print(rf_2_2)
+}
 varImpPlot(rf_2_2)
 
-rf_2_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=4, ntree=2000, cutoff=c(0.55, 0.45))
+rf_2_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, ntree=2000, cutoff=c(0.55, 0.45))
 rf_2_3
 varImpPlot(rf_2_3)
 
@@ -70,13 +78,14 @@ rf_3_1 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set
 rf_3_1
 varImpPlot(rf_3_1)
 
-cut_offs <- list(c(0.55, 0.45), c(0.6, 0.4), c(0.7, 0.3), c(0.85, 0.15), c(0.95, 0.05), c(0.98, 0.02))
+cut_offs <- list(c(0.25, 0.75), c(0.30, 0.70), c(0.35, 0.65), c(0.45, 0.55), c(0.55, 0.45), c(0.6, 0.4), c(0.7, 0.3), c(0.85, 0.15), c(0.95, 0.05), c(0.98, 0.02))
 for (i in cut_offs) {
   rf_3_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER-Salad, data=train_set, importance=T, cutoff=i)
+  print(i)
   print(rf_3_2)
 }
 
-rf_3_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER-Salad, data=train_set, importance=T, mtry=4, ntree=2000, cutoff=c(0.7, 0.3))
+rf_3_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER-Salad, data=train_set, importance=T, ntree=2000, cutoff=c(0.7, 0.3))
 rf_3_3
 varImpPlot(rf_3_3)
 

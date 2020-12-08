@@ -31,9 +31,6 @@ for (i in cut_offs) {
   print(b_1_2)
 }
 
-b_1_2 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=7, cutoff=c(0.25, 0.75))
-b_1_2
-
 # optimal ntree is 3500
 b_1_3 <- randomForest(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, importance=T, mtry=7, ntree=2000, cutoff=c(0.25,0.75))
 b_1_3
