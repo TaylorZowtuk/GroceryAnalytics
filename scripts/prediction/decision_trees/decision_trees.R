@@ -40,10 +40,6 @@ RowNum <- min(which(dt_1_3$cptable[,"xerror"]< benchmark))
 opt <- dt_1_3$cptable[RowNum,"CP"]
 cvt_1_3 <- prune(dt_1_3,cp=opt)
 cvt_1_3
-
-predResults <- table(test_set$Lottery, predict(dt_1_1,test_set,type="class")) 
-test.error<-1-sum(diag(predResults))/sum(predResults)
-test.error
 rpart.plot(cvt_1_3)
 
 predResults <- table(test_set$Lottery, predict(cvt_1_3,test_set,type="class")) 
