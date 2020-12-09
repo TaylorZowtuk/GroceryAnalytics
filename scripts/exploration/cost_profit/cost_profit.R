@@ -40,3 +40,9 @@ ggplot(data = data_csv) +
   geom_bin2d(mapping = aes(x = COST_PER_ITEM, y = PROFIT_PER_ITEM))
 ggplot(data = data_csv) +
   geom_point(mapping = aes(x = COST_PER_ITEM, y = PROFIT_PER_ITEM), alpha = 1 / 10)
+ggplot(data = data_csv) +
+  geom_point(mapping = aes(x = COST_PER_ITEM, y = PROFIT_PER_ITEM))
+
+data_csv <- data_csv[data_csv$PROFIT_PER_ITEM >= 0, ]
+ggplot(data = data_csv) +
+  geom_point(mapping = aes(x = COST_PER_ITEM, y = PROFIT_PER_ITEM))
