@@ -19,26 +19,34 @@ train_set <- baskets[train_ids, ]
 test_set <- baskets[-train_ids, ]
 
 
-dt_1_1 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=1, minbucket=1)
+dt_1_1 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"))
 dt_1_1
 rpart.plot(dt_1_1)
 
-dt_1_2 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=2, minbucket=1, cp=-1)
-dt_1_2$cptable
+dt_1_2 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=1, minbucket=1)
+dt_1_2
+rpart.plot(dt_1_2)
+
+dt_1_3 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=2, minbucket=1, cp=-1)
+dt_1_3$cptable
 
 # the min xerror
-min_xerror <- min(dt_1_2$cptable[,"xerror"])
+min_xerror <- min(dt_1_3$cptable[,"xerror"])
 
 # the corresponding xstd
-corres_xstd <- dt_1_2$cptable[which.min(dt_1_2$cptable[,"xerror"]),"xstd"]
+corres_xstd <- dt_1_3$cptable[which.min(dt_1_3$cptable[,"xerror"]),"xstd"]
 benchmark <- min_xerror + corres_xstd
-RowNum <- min(which(dt_1_2$cptable[,"xerror"]< benchmark))
-opt <- dt_1_2$cptable[RowNum,"CP"]
-cvt_1_2 <- prune(dt_1_2,cp=opt)
-cvt_1_2
-rpart.plot(cvt_1_2)
+RowNum <- min(which(dt_1_3$cptable[,"xerror"]< benchmark))
+opt <- dt_1_3$cptable[RowNum,"CP"]
+cvt_1_3 <- prune(dt_1_3,cp=opt)
+cvt_1_3
 
-predResults <- table(test_set$Lottery, predict(cvt_1_2,test_set,type="class")) 
+predResults <- table(test_set$Lottery, predict(dt_1_1,test_set,type="class")) 
+test.error<-1-sum(diag(predResults))/sum(predResults)
+test.error
+rpart.plot(cvt_1_3)
+
+predResults <- table(test_set$Lottery, predict(cvt_1_3,test_set,type="class")) 
 test.error<-1-sum(diag(predResults))/sum(predResults)
 test.error
 
@@ -52,24 +60,29 @@ train_ids <- sample(1:nrow(baskets), size=percent_train*nrow(baskets) , replace=
 train_set <- baskets[train_ids, ]
 test_set <- baskets[-train_ids, ]
 
-dt_2_1 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=1, minbucket=1)
+dt_2_1 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"))
 dt_2_1
 rpart.plot(dt_2_1)
 
-dt_2_2 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=2, minbucket=1, cp=-1)
-dt_2_2$cptable
+dt_2_2 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=1, minbucket=1)
+dt_2_2
+rpart.plot(dt_2_2)
+
+
+dt_2_3 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=2, minbucket=1, cp=-1)
+dt_2_3$cptable
 
 # the min xerror
-min_xerror <- min(dt_2_2$cptable[,"xerror"])
+min_xerror <- min(dt_2_3$cptable[,"xerror"])
 
 # the corresponding xstd
-corres_xstd <- dt_2_2$cptable[which.min(dt_2_2$cptable[,"xerror"]),"xstd"]
+corres_xstd <- dt_2_3$cptable[which.min(dt_2_3$cptable[,"xerror"]),"xstd"]
 benchmark <- min_xerror + corres_xstd
-RowNum <- min(which(dt_2_2$cptable[,"xerror"]< benchmark))
-opt <- dt_2_2$cptable[RowNum,"CP"]
-cvt_2_2 <- prune(dt_2_2,cp=opt)
-cvt_2_2
-rpart.plot(cvt_2_2)
+RowNum <- min(which(dt_2_3$cptable[,"xerror"]< benchmark))
+opt <- dt_2_3$cptable[RowNum,"CP"]
+cvt_2_3 <- prune(dt_2_3,cp=opt)
+cvt_2_3
+rpart.plot(cvt_2_3)
 
 source("./d_3_cleaning.R")
 baskets <- read_csv("dt_3.csv")
@@ -81,23 +94,25 @@ train_ids <- sample(1:nrow(baskets), size=percent_train*nrow(baskets) , replace=
 train_set <- baskets[train_ids, ]
 test_set <- baskets[-train_ids, ]
 
-
-dt_3_1 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=1, minbucket=1)
+dt_3_1 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"))
 dt_3_1
 
-dt_3_2 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=2, minbucket=1, cp=-1)
-dt_3_2$cptable
+dt_3_2 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=1, minbucket=1)
+dt_3_2
+
+dt_3_3 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=2, minbucket=1, cp=-1)
+dt_3_3$cptable
 
 # the min xerror
-min_xerror <- min(dt_3_2$cptable[,"xerror"])
+min_xerror <- min(dt_3_3$cptable[,"xerror"])
 
 # the corresponding xstd
-corres_xstd <- dt_3_2$cptable[which.min(dt_3_2$cptable[,"xerror"]),"xstd"]
+corres_xstd <- dt_3_3$cptable[which.min(dt_3_3$cptable[,"xerror"]),"xstd"]
 benchmark <- min_xerror + corres_xstd
-RowNum <- min(which(dt_3_2$cptable[,"xerror"]< benchmark))
-opt <- dt_3_2$cptable[RowNum,"CP"]
-cvt_3_2 <- prune(dt_3_2,cp=opt)
-cvt_3_2
-rpart.plot(cvt_3_2)
+RowNum <- min(which(dt_3_3$cptable[,"xerror"]< benchmark))
+opt <- dt_3_3$cptable[RowNum,"CP"]
+cvt_3_3 <- prune(dt_3_3,cp=opt)
+cvt_3_3
+rpart.plot(cvt_3_3)
 
 
