@@ -26,12 +26,6 @@ rpart.plot(dt_1_1)
 dt_1_2 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=2, minbucket=1, cp=-1)
 dt_1_2$cptable
 
-# Use CP value with minimum xerror
-opt <- dt_1_2$cptable[which.min(dt_1_2$cptable[,"xerror"]),"CP"]
-pruned <- prune(dt_1_2, cp = opt)
-pruned
-rpart.plot(pruned)
-
 # the min xerror
 min_xerror <- min(dt_1_2$cptable[,"xerror"])
 
@@ -65,12 +59,6 @@ rpart.plot(dt_2_1)
 dt_2_2 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=2, minbucket=1, cp=-1)
 dt_2_2$cptable
 
-# Use CP value with minimum xerror
-opt <- dt_2_2$cptable[which.min(dt_2_2$cptable[,"xerror"]),"CP"]
-pruned <- prune(dt_2_2, cp = opt)
-pruned
-rpart.plot(pruned)
-
 # the min xerror
 min_xerror <- min(dt_2_2$cptable[,"xerror"])
 
@@ -99,12 +87,6 @@ dt_3_1
 
 dt_3_2 <- rpart(Lottery~.-CUSTOMER_ID-TILL_RECEIPT_NUMBER, data=train_set, method="class", parms=list(split="information"), minsplit=2, minbucket=1, cp=-1)
 dt_3_2$cptable
-
-# Use CP value with minimum xerror
-opt <- dt_3_2$cptable[which.min(dt_3_2$cptable[,"xerror"]),"CP"]
-pruned <- prune(dt_3_2, cp = opt)
-pruned
-rpart.plot(pruned)
 
 # the min xerror
 min_xerror <- min(dt_3_2$cptable[,"xerror"])
