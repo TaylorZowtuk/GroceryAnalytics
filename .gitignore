@@ -1,3 +1,7 @@
+# Ignore files produced by queries
+*.csv
+*.xlsx
+
 # History files
 .Rhistory
 .Rapp.history
